@@ -1,0 +1,59 @@
+name: Deploy Feature Branch to GitHub Pages
+
+on:
+  push:
+    branches:
+      - 'claude/**'  # Trigger on any claude/* branch
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages-${{ github.ref_name }}"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Update setuptools
+        run: |
+          pip install setuptools==78.1.1 wheel==0.45.1
+
+      - name: Install Dependencies
+        run: |
+          pip install -q -e .[dev]
+
+      - name: Build English Documentation
+        run: |
+          cd docs/tutorial/en/
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/tutorial/en/build/html
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
