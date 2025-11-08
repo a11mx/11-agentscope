@@ -142,3 +142,13 @@ docs/tutorial/**/doctrees/
 docs/tutorial/**/.doctrees/
 *.buildinfo
 *.pickle
+
+# Sphinx generated files
+docs/tutorial/en/api/
+docs/tutorial/zh_CN/api/
+docs/tutorial/en/sg_execution_times.rst
+docs/tutorial/zh_CN/sg_execution_times.rst
+docs/tutorial/en/src/results/
+docs/tutorial/zh_CN/src/results/
+docs/tutorial/en/tutorial/
+docs/tutorial/zh_CN/tutorial/
